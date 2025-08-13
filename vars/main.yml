@@ -1,0 +1,4 @@
+---
+# vars file for create-ansible-user
+ansible_user_groups:
+  - "{{ 'sudo' if ansible_os_family == 'Debian' else 'wheel' }}"

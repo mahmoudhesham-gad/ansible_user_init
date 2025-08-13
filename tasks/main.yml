@@ -1,0 +1,14 @@
+---
+# tasks file for create-ansible-user
+- name: create ansible user
+  user:
+    name: ansible
+    state: present
+    shell: /bin/bash
+    home: "/home/ansible"
+    createhome: true
+    groups: "{{ ansible_user_groups }}"
+    append: true
+  notify:
+    - Create sudoers file
+    - Add authorized key from id_rsa.pub file
