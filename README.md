@@ -1,38 +1,58 @@
-Role Name
-=========
+# Role Name
 
-A brief description of the role goes here.
+create-ansible-user
 
-Requirements
-------------
+## Description
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+This role creates a user named `ansible` with passwordless `sudo` privileges and adds an authorized key for SSH access.
 
-Role Variables
---------------
+## Requirements
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+- SSH connection to the managed nodes must be established.
+- It is recommended to use SSH key-based authentication and passwordless `sudo` for privilege escalation.
+- An SSH public key file `~/.ssh/id_rsa.pub` must exist on the control node from where you are running the playbook, as it will be used for the `authorized_key` module.
 
-Dependencies
-------------
+## Role Variables
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+- `ansible_user_groups`: This variable determines the group to which the `ansible` user is added to grant `sudo` privileges. It is set automatically based on the OS family (`sudo` for Debian-based systems, `wheel` for RedHat-based systems).
 
-Example Playbook
-----------------
+  File: `vars/main.yml`
+  ```yaml
+  ---
+  # vars file for create-ansible-user
+  ansible_user_groups:
+    - "{{ 'sudo' if ansible_os_family == 'Debian' else 'wheel' }}"
+  ```
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+## Dependencies
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+This role has no dependencies on other roles.
 
-License
--------
+## Example Playbook
+
+Here is an example of how to use the `create-ansible-user` role in a playbook:
+
+```yaml
+---
+- hosts: all
+  roles:
+    - create-ansible-user
+```
+
+## How to use
+
+To execute the role, run the `ansible-playbook` command, specifying your inventory file and playbook.
+
+For example, from the root directory of the project:
+
+```bash
+ansible-playbook -i hosts.ini playbook.yml
+```
+
+## License
 
 BSD
 
-Author Information
-------------------
+## Author Information
 
 An optional section for the role authors to include contact information, or a website (HTML is not allowed).
